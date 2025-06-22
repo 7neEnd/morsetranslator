@@ -106,8 +106,8 @@
     <div><strong id="outputLabel">Morse Code:</strong></div>
     <pre id="morseOutput"></pre>
     <p id="infoText">
-      Another project from Streamlit! <a href="https://kosmorse.streamlit.app/" target="_blank">Streamlit Project</a>
-      A video where a disabled person talks in morse code <a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw&" target="_blank">The video</a>
+      A video where a disabled person talks in morse code: <a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw&" target="_blank">The video</a>
+    </p>
   </div>
   <div id="tab2" class="tab-content">
     <p id="whyText">We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.</p>
@@ -196,14 +196,11 @@
       document.getElementById('translateButton').textContent = isKorean ? '모스 부호로 번역하기' : 'Translate to Morse';
       document.getElementById('outputLabel').textContent = isKorean ? '모스 부호:' : 'Morse Code:';
       document.getElementById('infoText').innerHTML = isKorean
-        ? '스트림릿으로 따로 만든 작품! <a href="https://kosmorse.streamlit.app/" target="_blank">스트림릿 작품</a>'
-        : 'Another project from Streamlit! <a href="https://kosmorse.streamlit.app/" target="_blank">Streamlit Project</a>';
+        ? '장애인이 모스부호로 소통하는 영상 (한글자막): <a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw&" target="_blank">영상</a>'
+        : 'A video where a disabled person talks in morse code: <a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw&" target="_blank">The video</a>';
       document.getElementById('whyText').textContent = isKorean
         ? '이 프로젝트는 언어와 코드의 접점을 탐구하고, 다양한 문자 체계에서 모스 부호를 사용할 수 있도록 만들기 위해 시작했습니다.'
         : 'We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.';
-      document.getElementById('infoText').textContent = isKorean
-        ? '장애인이 모스부호로 소통하는 영상 (한글자막) <a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw&" target="_blank">영상</a>'
-        : 'A video where a disabled person talks in morse code <a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw&" target="_blank">The video</a>'
     });
   </script>
 </body>
