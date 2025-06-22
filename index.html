@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KosMorse</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      font-size: 3em;
+      font-weight: bold;
+      color: #2b2d42;
+      text-align: center;
+      margin-top: 1em;
+    }
+    .subheader {
+      text-align: center;
+      font-size: 1.2em;
+      color: #6c757d;
+      margin-bottom: 1em;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-top: 1em;
+    }
+    .tab-button {
+      padding: 0.5em 1em;
+      margin: 0 0.5em;
+      cursor: pointer;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 4px;
+    }
+    .tab-button.active {
+      background-color: #2b2d42;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      padding: 1em;
+      text-align: center;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    textarea {
+      width: 80%;
+      max-width: 500px;
+      margin: 1em auto;
+    }
+    button {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      cursor: pointer;
+      background-color: #2b2d42;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    pre {
+      background-color: #e9ecef;
+      padding: 1em;
+      border-radius: 4px;
+      width: auto;
+      min-width: 200px;
+      max-width: 90%;
+      margin: 1em auto;
+      text-align: left;
+      word-wrap: break-word;
+      display: inline-block;
+    }
+    footer {
+      font-size: 0.8em;
+      color: #adb5bd;
+      text-align: center;
+      margin: 2em 0;
+    }
+    #languageToggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button id="languageToggle">한국어</button>
+  <header>KosMorse</header>
+  <div class="subheader" id="subheader">to connect the dots of the world</div>
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('tab1')" id="translatorTab">Translators</button>
+    <button class="tab-button" onclick="showTab('tab2')" id="whyTab">Why we made this</button>
+  </div>
+  <div id="tab1" class="tab-content active">
+    <textarea id="textInput" rows="4" cols="50" placeholder="Enter text or 한글 here..."></textarea><br>
+    <button onclick="translateToMorse()" id="translateButton">Translate to Morse</button>
+    <div><strong id="outputLabel">Morse Code:</strong></div>
+    <pre id="morseOutput"></pre>
+    <p id="infoText">
+      Currently, we couldn't bother making an inputter in html, so enjoy this one, instead!
+      <a href="https://en.wikipedia.org" target="_blank">Wikipedia</a>
+    </p>
+  </div>
+  <div id="tab2" class="tab-content">
+    <p id="whyText">We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.</p>
+  </div>
+  <footer>
+    &copy;2025 The KosMorse Team. All rights reserved.
+  </footer>
+  <script>
+    const morseCodeMap = {
+      'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+      'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+      'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+      'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+      'Y': '-.--', 'Z': '--..',
+      '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+      '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+      ' ': '/',
+      'ㄱ': '.-..', 'ㄴ': '..-.', 'ㄷ': '-...', 'ㄹ': '...-', 'ㅁ': '--',
+      'ㅂ': '.--', 'ㅅ': '--.', 'ㅇ': '-.-', 'ㅈ': '.--.', 'ㅊ': '-.-.',
+      'ㅋ': '-..-', 'ㅌ': '--..', 'ㅍ': '---', 'ㅎ': '.---',
+      'ㅏ': '.', 'ㅑ': '..', 'ㅓ': '-', 'ㅕ': '...', 'ㅗ': '.-',
+      'ㅛ': '-.', 'ㅜ': '....', 'ㅠ': '.-.', 'ㅡ': '..-', 'ㅣ': '..-',
+      'ㅐ': '--.-', 'ㅔ': '-.--'
+    };
+
+    const CHOSEONG = [
+      'ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'
+    ];
+    const JUNGSEONG = [
+      'ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ',
+      'ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'
+    ];
+    const JONGSEONG = [
+      '', 'ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ',
+      'ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'
+    ];
+
+    function decomposeHangul(char) {
+      const code = char.charCodeAt(0);
+      if (code < 0xAC00 || code > 0xD7A3) return [char];
+      const offset = code - 0xAC00;
+      const cho = Math.floor(offset / (21 * 28));
+      const jung = Math.floor((offset % (21 * 28)) / 28);
+      const jong = offset % 28;
+      const result = [CHOSEONG[cho], JUNGSEONG[jung]];
+      if (JONGSEONG[jong]) result.push(JONGSEONG[jong]);
+      return result;
+    }
+
+    function translateToMorse() {
+      const input = document.getElementById('textInput').value.replace(/[\r\n]+/g, ' ');
+      let output = '';
+      for (let char of input) {
+        let charsToTranslate = [];
+        if (char >= '\uAC00' && char <= '\uD7A3') {
+          charsToTranslate = decomposeHangul(char);
+        } else {
+          charsToTranslate = [char];
+        }
+        for (let jamo of charsToTranslate) {
+          const upper = jamo.toUpperCase();
+          const morse = morseCodeMap[jamo] || morseCodeMap[upper] || '?';
+          output += morse + ' ';
+        }
+      }
+      document.getElementById('morseOutput').textContent = output.trim();
+    }
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      if (tabId === 'tab1') {
+        document.getElementById('translatorTab').classList.add('active');
+      } else {
+        document.getElementById('whyTab').classList.add('active');
+      }
+    }
+
+    document.getElementById('languageToggle').addEventListener('click', () => {
+      const isKorean = document.getElementById('languageToggle').textContent === '한국어';
+      document.getElementById('languageToggle').textContent = isKorean ? 'English' : '한국어';
+      document.getElementById('subheader').textContent = isKorean ? '세상의 점들을 연결하기 위해' : 'to connect the dots of the world';
+      document.getElementById('translatorTab').textContent = isKorean ? '번역기' : 'Translators';
+      document.getElementById('whyTab').textContent = isKorean ? '우리가 이걸 만든 이유' : 'Why we made this';
+      document.getElementById('translateButton').textContent = isKorean ? '모스 부호로 번역하기' : 'Translate to Morse';
+      document.getElementById('outputLabel').textContent = isKorean ? '모스 부호:' : 'Morse Code:';
+      document.getElementById('infoText').innerHTML = isKorean
+        ? '지금은 HTML로 입력기를 못 만들어서, 이걸로 만족하세요! <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">입력기</a>'
+        : 'Currently, we couldn\'t bother making an inputter in html, so enjoy this one, instead! <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">The inputter</a>';
+      document.getElementById('whyText').textContent = isKorean
+        ? '이 프로젝트는 언어와 코드의 접점을 탐구하고, 다양한 문자 체계에서 모스 부호를 사용할 수 있도록 만들기 위해 시작했습니다.'
+        : 'We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.';
+    });
+  </script>
+</body>
+</html>
