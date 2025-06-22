@@ -106,9 +106,7 @@
     <div><strong id="outputLabel">Morse Code:</strong></div>
     <pre id="morseOutput"></pre>
     <p id="infoText">
-      Currently, we couldn't bother making an inputter in html, so enjoy this one, instead!
-      <a href="https://en.wikipedia.org" target="_blank">Wikipedia</a>
-    </p>
+      Another project from Streamlit! <a href="https://kosmorse.streamlit.app/" target="_blank">Streamlit Project</a>
   </div>
   <div id="tab2" class="tab-content">
     <p id="whyText">We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.</p>
@@ -197,8 +195,8 @@
       document.getElementById('translateButton').textContent = isKorean ? '모스 부호로 번역하기' : 'Translate to Morse';
       document.getElementById('outputLabel').textContent = isKorean ? '모스 부호:' : 'Morse Code:';
       document.getElementById('infoText').innerHTML = isKorean
-        ? '지금은 HTML로 입력기를 못 만들어서, 이걸로 만족하세요! <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">입력기</a>'
-        : 'Currently, we couldn\'t bother making an inputter in html, so enjoy this one, instead! <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">The inputter</a>';
+        ? '스트림릿으로 따로 만든 작품! <a href="https://kosmorse.streamlit.app/" target="_blank">스트림릿 작품</a>'
+        : 'Another project from Streamlit! <a href="https://kosmorse.streamlit.app/" target="_blank">Streamlit Project</a>';
       document.getElementById('whyText').textContent = isKorean
         ? '이 프로젝트는 언어와 코드의 접점을 탐구하고, 다양한 문자 체계에서 모스 부호를 사용할 수 있도록 만들기 위해 시작했습니다.'
         : 'We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.';
