@@ -1,3 +1,4 @@
+<!-- Full HTML pasted below -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,10 +15,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
       padding: 1em;
-      padding-bottom: 120px; /* space for fixed input at bottom */
-      box-sizing: border-box;
     }
     header {
       font-size: 3em;
@@ -44,13 +42,28 @@
       padding: 0.4em 0.8em;
       font-size: 1em;
       user-select: none;
-      z-index: 10;
     }
     .tabs {
-      margin-top: 1em;
       width: 100%;
       max-width: 600px;
-      flex-grow: 1;
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      margin-bottom: 1em;
+    }
+    .tab-buttons button {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      background-color: #dee2e6;
+      cursor: pointer;
+    }
+    .tab-buttons .active {
+      background-color: #2b2d42;
+      color: white;
     }
     .tab-content {
       background: white;
@@ -60,36 +73,15 @@
       text-align: center;
       margin-bottom: 2em;
     }
-    footer {
-      font-size: 0.8em;
-      color: #adb5bd;
-      text-align: center;
-      margin: 2em 0;
-      width: 100%;
-    }
-    a {
-      color: #2b2d42;
-      text-decoration: underline;
-    }
-    /* Fixed input area at bottom */
     #inputter {
-      position: fixed;
-      bottom: 0;
-      left: 0;
+      margin-top: auto;
+      margin-bottom: 2em;
       width: 100%;
-      max-width: 600px;
-      background: white;
-      box-shadow: 0 -2px 10px rgb(0 0 0 / 0.1);
-      padding: 0.8em 1em;
       display: flex;
       flex-direction: column;
-      align-items: center; /* centers children horizontally */
-      box-sizing: border-box;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      z-index: 20;
+      align-items: center;
     }
-    #ditDahButton {
+    #ditDahButton, #spaceButton, #toggleMode {
       padding: 0.7em 1.4em;
       font-size: 1.3em;
       cursor: pointer;
@@ -98,11 +90,10 @@
       border: none;
       border-radius: 6px;
       user-select: none;
-      max-width: 400px;
-      width: 100%;
-      margin: 0 auto 0.8em auto; /* center horizontally */
+      margin: 0.4em;
     }
     #morseInputDisplay {
+      margin-top: 1em;
       min-height: 1.5em;
       font-family: monospace;
       font-size: 1.4em;
@@ -116,7 +107,17 @@
       width: 100%;
       max-width: 600px;
       word-break: break-all;
+    }
+    footer {
+      font-size: 0.8em;
+      color: #adb5bd;
       text-align: center;
+      margin: 2em 0 1em 0;
+      width: 100%;
+    }
+    a {
+      color: #2b2d42;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -126,96 +127,190 @@
   <div class="subheader" id="subheader">to connect the dots of the world</div>
 
   <div class="tabs">
-    <div id="tabContent" class="tab-content">
-      <p id="whyText">
-        We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.
-      </p>
-      <p id="videoLinkContainer">
-        <a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw" target="_blank" rel="noopener noreferrer" id="videoLink">
-          A video where a disabled person talks in morse code
-        </a>
+    <div class="tab-buttons">
+      <button id="whyBtn" class="active">Why</button>
+      <button id="howBtn">How to Use</button>
+    </div>
+    <div id="whyTab" class="tab-content">
+      <p id="whyText">We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.</p>
+      <p><a href="https://www.youtube.com/watch?v=Oc_QMQ4QHcw" target="_blank" rel="noopener noreferrer" id="videoLink">A video where a disabled person talks in morse code</a></p>
+    </div>
+    <div id="howTab" class="tab-content" style="display: none;">
+      <p id="howText">
+        Hold the button: dot or dash depending on time.<br />
+        Click "Space" after each character.<br />
+        Double-click "Space" to add a word space.<br />
+        Toggle between English and Korean input using "A/한".
       </p>
     </div>
   </div>
 
-  <div id="inputter" aria-label="Morse code input area">
-    <button id="ditDahButton" aria-label="Input Dit or Dah">Press and hold</button>
+  <div id="inputter">
+    <div>
+      <button id="ditDahButton">Press and hold</button>
+      <button id="spaceButton">Space</button>
+      <button id="toggleMode">A/한</button>
+    </div>
     <div id="morseInputDisplay" aria-live="polite" aria-atomic="true">Input waiting...</div>
   </div>
 
-  <footer>
-    &copy;2025 The KosMorse Team. All rights reserved.
-  </footer>
+  <footer>&copy;2025 The KosMorse Team. All rights reserved.</footer>
 
   <script>
+    const ditDahButton = document.getElementById('ditDahButton');
+    const spaceButton = document.getElementById('spaceButton');
+    const toggleMode = document.getElementById('toggleMode');
+    const morseInputDisplay = document.getElementById('morseInputDisplay');
     const langToggleBtn = document.getElementById('languageToggle');
     const subheader = document.getElementById('subheader');
     const whyText = document.getElementById('whyText');
+    const howText = document.getElementById('howText');
     const videoLink = document.getElementById('videoLink');
-    const ditDahButton = document.getElementById('ditDahButton');
-    const morseInputDisplay = document.getElementById('morseInputDisplay');
+    const whyBtn = document.getElementById('whyBtn');
+    const howBtn = document.getElementById('howBtn');
+    const whyTab = document.getElementById('whyTab');
+    const howTab = document.getElementById('howTab');
 
-    let isKorean = false;
+    const morseToLatin = {
+      '.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D',
+      '.': 'E', '..-.': 'F', '--.': 'G', '....': 'H',
+      '..': 'I', '.---': 'J', '-.-': 'K', '.-..': 'L',
+      '--': 'M', '-.': 'N', '---': 'O', '.--.': 'P',
+      '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T',
+      '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X',
+      '-.--': 'Y', '--..': 'Z'
+    };
 
-    langToggleBtn.addEventListener('click', () => {
-      isKorean = !isKorean;
-      if (isKorean) {
-        langToggleBtn.textContent = 'English';
-        subheader.textContent = '세상의 점들을 연결하기 위해';
-        whyText.textContent = '이 프로젝트는 언어와 코드의 접점을 탐구하고, 다양한 문자 체계에서 모스 부호를 사용할 수 있도록 만들기 위해 시작했습니다.';
-        videoLink.textContent = '장애인이 모스부호로 소통하는 영상 (한글 자막)';
-        ditDahButton.title = '딧 또는 대를 입력하려면 누르고 있거나 짧게 누르세요';
-        ditDahButton.textContent = '누르고 있기';
-      } else {
-        langToggleBtn.textContent = '한국어';
-        subheader.textContent = 'to connect the dots of the world';
-        whyText.textContent = 'We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.';
-        videoLink.textContent = 'A video where a disabled person talks in morse code';
-        ditDahButton.title = 'Input Dit or Dah by short or long press';
-        ditDahButton.textContent = 'Press and hold';
+    const morseToHangul = {
+      '.-': 'ㄱ', '-...': 'ㄴ', '-.-.': 'ㄷ', '-..': 'ㄹ', '.': 'ㅁ',
+      '..-.': 'ㅂ', '--.': 'ㅅ', '....': 'ㅇ', '..': 'ㅈ', '.---': 'ㅊ',
+      '-.-': 'ㅋ', '.-..': 'ㅌ', '--': 'ㅍ', '-.': 'ㅎ',
+      '---': 'ㅏ', '.--.': 'ㅑ', '--.-': 'ㅓ', '.-.': 'ㅕ',
+      '...': 'ㅗ', '-': 'ㅛ', '..-': 'ㅜ', '...-': 'ㅠ',
+      '.--': 'ㅡ', '-..-': 'ㅣ'
+    };
+
+    const combineJamo = (jamos) => {
+      const cho = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+      const jung = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
+      const jong = ['', 'ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+      const compose = (c, v, f) => {
+        const i = cho.indexOf(c), j = jung.indexOf(v), k = jong.indexOf(f || '');
+        if (i < 0 || j < 0 || k < 0) return c + v + (f || '');
+        return String.fromCharCode(0xAC00 + (i * 21 * 28) + (j * 28) + k);
+      };
+      const vowels = jung.split('');
+      const doubleVowel = {
+        'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ',
+        'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ',
+        'ㅡㅣ': 'ㅢ', 'ㅑㅣ': 'ㅒ', 'ㅕㅣ': 'ㅖ'
+      };
+      let result = '', i = 0;
+      while (i < jamos.length) {
+        let c = jamos[i], v = jamos[i+1], f = jamos[i+2] || '';
+        if (doubleVowel[v + f]) {
+          v = doubleVowel[v + f];
+          i++;
+          f = jamos[i+2] || '';
+        }
+        if (cho.includes(c) && jung.includes(v)) {
+          if (jong.includes(f)) {
+            result += compose(c, v, f);
+            i += 3;
+          } else {
+            result += compose(c, v);
+            i += 2;
+          }
+        } else {
+          result += c;
+          i++;
+        }
       }
-      morseInputDisplay.textContent = morseInput || (isKorean ? '입력 대기 중...' : 'Input waiting...');
-    });
+      return result;
+    };
 
     let morseInput = '';
     let pressStartTime = 0;
-    const threshold = 300; // ms to differentiate dit vs dah
+    let threshold = 300;
+    let currentCode = '';
+    let currentSequence = [];
+    let koreanMode = false;
+    let lastSpaceClick = 0;
 
-    function resetButtonLabel() {
-      ditDahButton.textContent = isKorean ? '누르고 있기' : 'Press and hold';
+    function playTone(freq) {
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1);
     }
 
-    ditDahButton.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
+    function updateDisplay() {
+      const text = koreanMode ? combineJamo(currentSequence) : currentSequence.join('');
+      morseInputDisplay.textContent = text || (koreanMode ? '입력 대기 중...' : 'Input waiting...');
+    }
+
+    ditDahButton.addEventListener('pointerdown', () => {
       pressStartTime = Date.now();
-      ditDahButton.textContent = isKorean ? '누르는 중...' : 'Pressing...';
+      ditDahButton.textContent = koreanMode ? '누르는 중...' : 'Pressing...';
     });
 
-    ditDahButton.addEventListener('pointerup', (e) => {
-      e.preventDefault();
-      const pressDuration = Date.now() - pressStartTime;
-      if (pressDuration < threshold) {
-        morseInput += '.';
-      } else {
-        morseInput += '-';
+    ditDahButton.addEventListener('pointerup', () => {
+      const duration = Date.now() - pressStartTime;
+      const symbol = duration < threshold ? '.' : '-';
+      playTone(duration < threshold ? 600 : 400);
+      currentCode += symbol;
+      ditDahButton.textContent = koreanMode ? '누르고 있기' : 'Press and hold';
+    });
+
+    spaceButton.addEventListener('click', () => {
+      const now = Date.now();
+      const map = koreanMode ? morseToHangul : morseToLatin;
+      if (now - lastSpaceClick < 500) {
+        currentSequence.push(' ');
+      } else if (currentCode && map[currentCode]) {
+        currentSequence.push(map[currentCode]);
       }
-      morseInputDisplay.textContent = morseInput;
-      resetButtonLabel();
+      currentCode = '';
+      lastSpaceClick = now;
+      updateDisplay();
     });
 
-    ditDahButton.addEventListener('pointercancel', (e) => {
-      e.preventDefault();
-      resetButtonLabel();
+    toggleMode.addEventListener('click', () => {
+      koreanMode = !koreanMode;
+      updateDisplay();
     });
 
-    ditDahButton.addEventListener('pointerleave', (e) => {
-      if (pressStartTime !== 0) {
-        resetButtonLabel();
-      }
+    langToggleBtn.addEventListener('click', () => {
+      const isKorean = langToggleBtn.textContent === '한국어';
+      langToggleBtn.textContent = isKorean ? 'English' : '한국어';
+      subheader.textContent = isKorean ? '세상의 점들을 연결하기 위해' : 'to connect the dots of the world';
+      whyText.textContent = isKorean
+        ? '이 프로젝트는 언어와 코드의 접점을 탐구하고, 다양한 문자 체계에서 모스 부호를 사용할 수 있도록 만들기 위해 시작했습니다.'
+        : 'We made this project to explore the intersection of language and code, and to make Morse accessible across writing systems.';
+      howText.innerHTML = isKorean
+        ? '버튼을 길게 누르세요: 점 또는 선.<br />각 글자마다 "스페이스"를 누르세요.<br />"스페이스"를 두 번 누르면 단어 간 띄어쓰기가 됩니다.<br />"A/한"을 눌러 언어 입력을 전환하세요.'
+        : 'Hold the button: dot or dash depending on time.<br />Click "Space" after each character.<br />Double-click "Space" to add a word space.<br />Toggle between English and Korean input using "A/한".';
+      videoLink.textContent = isKorean ? '장애인이 모스부호로 소통하는 영상 (한글 자막)' : 'A video where a disabled person talks in morse code';
     });
 
-    // Initialize display text
-    morseInputDisplay.textContent = 'Input waiting...';
+    whyBtn.addEventListener('click', () => {
+      whyTab.style.display = 'block';
+      howTab.style.display = 'none';
+      whyBtn.classList.add('active');
+      howBtn.classList.remove('active');
+    });
+
+    howBtn.addEventListener('click', () => {
+      howTab.style.display = 'block';
+      whyTab.style.display = 'none';
+      howBtn.classList.add('active');
+      whyBtn.classList.remove('active');
+    });
   </script>
 </body>
 </html>
